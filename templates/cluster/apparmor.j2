@@ -1,0 +1,19 @@
+# {{ ansible_managed }}
+#include <tunables/global>
+
+profile ipfs-cluster {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  network,
+  unix,
+
+  /proc/sys/net/core/somaxconn r,
+  /sys/kernel/mm/transparent_hugepage/hpage_pmd_size r,
+  /usr/local/ipfs-cluster-service_v?.??.?/ipfs-cluster-service/ipfs-cluster-service mr,
+  owner {{ ipfs_home }}/**/ r,
+  owner {{ ipfs_home }}/.ipfs-cluster/* rwk,
+  owner {{ ipfs_home }}/.ipfs-cluster/** rw,
+  owner {{ ipfs_home }}/.ipfs-cluster/** wk,
+
+}

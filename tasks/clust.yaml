@@ -1,0 +1,32 @@
+---
+- name: ipfs-cluster init
+  become: true
+  become_user: ipfs
+  command: "/usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init --peers {{ ipfs_cluster_bootstrap | join(',') }}"
+  args:
+    chdir: "{{ ipfs_home }}"
+    creates: "{{ ipfs_home }}/.ipfs-cluster/service.json"
+
+- name: ipfs-cluster service file
+  template:
+    src: templates/cluster/service.j2
+    dest: /etc/systemd/system/ipfs-cluster.service
+    owner: root
+    group: root
+    mode: 0644
+
+- name: ipfs-cluster apparmor profile
+  template:
+    src: templates/cluster/apparmor.j2
+    dest: /etc/apparmor.d/ipfs-cluster
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - load ipfs-cluster apparmor
+
+- name: ipfs-cluster service
+  service:
+    name: ipfs-cluster
+    state: started
+    enabled: true

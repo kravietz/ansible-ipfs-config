@@ -1,0 +1,12 @@
+---
+- name: ipfs restart
+  service:
+    name: ipfs.service
+    state: restarted
+
+- name: load ipfs apparmor
+  command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs
+
+- name: load ipfs-cluster apparmor
+  command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs-cluster
+

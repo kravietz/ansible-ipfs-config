@@ -1,0 +1,17 @@
+---
+- name: combine vars
+  set_fact:
+    ipfs_config_combined: "{{ ipfs_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_config'], recursive=True ) }}"
+  when: hostvars[inventory_hostname]['ipfs_config'] is defined
+
+- name: debug merged config
+  debug: var=ipfs_config_combined
+  when: ipfs_config_debug
+
+- name: configure ipfs service
+  when: ipfs_cluster_secret is defined and ipfs_cluster_bootstrap is defined
+  include_tasks: tasks/ipfs.yaml
+
+- name: configure ipfs cluster
+  when: ipfs_cluster_secret is defined and ipfs_cluster_bootstrap is defined
+  include_tasks: tasks/clust.yaml

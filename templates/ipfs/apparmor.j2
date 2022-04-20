@@ -1,0 +1,22 @@
+# {{ ansible_managed }}
+#include <tunables/global>
+
+profile ipfs {
+  #include <abstractions/base>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+
+  network,
+
+  unix,
+
+  /etc/mime.types r,
+  /proc/sys/net/core/somaxconn r,
+  /sys/kernel/mm/transparent_hugepage/hpage_pmd_size r,
+  /usr/local/go-ipfs_v?.?.?/go-ipfs/ipfs r,
+  /usr/local/go-ipfs_v?.??.?/go-ipfs/ipfs r,
+  owner {{ ipfs_home }}/.ipfs/* rwk,
+  owner {{ ipfs_home }}/.ipfs/** k,
+  owner {{ ipfs_home }}/.ipfs/** rw,
+
+}

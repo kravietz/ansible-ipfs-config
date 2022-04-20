@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Pawel Krawczyk
+  description: ipfs and ipfs-cluster configuration
+  license: GPL-3.0-only
+
+  min_ansible_version: '2.1'
+
+  platforms:
+  - name: Ubuntu
+    versions:
+    - all
+
+  galaxy_tags:
+    - ipfs
+
+dependencies:
+  - role: andrewrothstein.ipfs
