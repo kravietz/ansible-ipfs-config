@@ -1,22 +1,48 @@
-Role Name
-=========
+ipfs_config
+===========
 
-A brief description of the role goes here.
+Deploy `go-ipfs` configuration with Ansible, including `systemd` service files.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+`go-ipfs` must be present in the system.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The primary variable used by this role is `ipfs_config_default` that contains the whole `go-ipfs` config (as found int `.ipfs/config`) in YAML format:
+
+```yaml
+
+# 
+ipfs_config_default:
+  API:
+  HTTPHeaders: {}
+  Addresses:
+    API:
+    - /ip6/::/tcp/5001
+    - /ip4/0.0.0.0/tcp/5001
+    ...
+```
+
+`go-ipfs` config documentation can be found here https://github.com/ipfs/go-ipfs/blob/master/docs/config.md
+
+In addition the role uses the following variables:
+
+```yaml
+ipfs_config_debug: true
+ipfs_mem_hi: 800M
+ipfs_mem_max: 1G
+ipfs_home: /home/ipfs
+```
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+For installation of the actual `go-ipfs` binaries:
+
+* [andrewrothstein.ipfs](https://galaxy.ansible.com/andrewrothstein/ipfs)
 
 Example Playbook
 ----------------
@@ -30,9 +56,9 @@ Including an example of how to use your role (for instance, with variables passe
 License
 -------
 
-BSD
+GPL3
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Pawel Krawczyk https://krvtz.net/
