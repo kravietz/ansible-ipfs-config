@@ -6,6 +6,9 @@ ipfs_home: /home/ipfs
 ipfs_config_debug: true
 # https://github.com/ipfs/go-ipfs/blob/master/docs/config.md
 ipfs_config_default:
+  # Identity:
+  #   PeerID: THIS MUST BE OVERRIDEN
+  #   PrivKey: THIS MUST BE OVERRIDEN
   API:
   HTTPHeaders: {}
   Addresses:
@@ -75,9 +78,6 @@ ipfs_config_default:
     PublicGateways: null
     RootRedirect: ''
     Writable: false
-  Identity:
-    PeerID: MUST_OVERRIDE
-    PrivKey: MUST_OVERRIDE
   Internal: {}
   Ipns:
     RecordLifetime: ''
