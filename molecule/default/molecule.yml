@@ -5,7 +5,7 @@ driver:
   name: docker
 platforms:
   - name: instance
-    image: ubuntu:latest
+    image: ubuntu:focal
 provisioner:
   name: ansible
 verifier:
