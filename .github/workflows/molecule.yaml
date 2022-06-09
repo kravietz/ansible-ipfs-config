@@ -17,5 +17,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: "${{ github.repository }}"
+
+      - name: update apt cache
+        run: apt-get update -y
+
       - name: Ansible Molecule
         uses: MonolithProjects/action-molecule@v1.4.5
