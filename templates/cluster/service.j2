@@ -15,7 +15,9 @@ MemoryHigh={{ ipfs_memory_high }}
 MemoryMax={{ ipfs_memory_max }}
 WorkingDirectory={{ ipfs_home }}
 ReadWritePaths={{ ipfs_home }}
+{% if ipfs_apparmor %}
 AppArmorProfile=ipfs-cluster
+{% endif %}
 NoNewPrivileges=yes
 ProtectControlGroups=yes
 ProtectKernelModules=yes

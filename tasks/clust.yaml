@@ -76,6 +76,7 @@
     mode: 0644
 
 - name: ipfs-cluster apparmor profile
+  when: ipfs_apparmor
   template:
     src: templates/cluster/apparmor.j2
     dest: /etc/apparmor.d/ipfs-cluster

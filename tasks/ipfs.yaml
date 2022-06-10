@@ -59,6 +59,7 @@
     mode: 0644
 
 - name: ipfs apparmor profile
+  when: ipfs_apparmor
   template:
     src: templates/ipfs/apparmor.j2
     dest: /etc/apparmor.d/ipfs
