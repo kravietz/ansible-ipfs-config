@@ -5,6 +5,13 @@
     home: "{{ ipfs_home }}"
     password_lock: true
 
+- name: ensure ipfs config directory
+  file:
+    dest: "{{ ipfs_home }}/.ipfs"
+    owner: ipfs
+    group: ipfs
+    mode: 0750
+
 - name: config absent - ipfs init
   become: true
   become_user: ipfs

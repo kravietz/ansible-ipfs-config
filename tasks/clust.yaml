@@ -4,6 +4,13 @@
     that:
       - ipfs_cluster_secret is defined
 
+- name: ensure ipfs cluster config directory
+  file:
+    dest: "{{ ipfs_home }}/.ipfs-cluster"
+    owner: ipfs
+    group: ipfs
+    mode: 0750
+
 - name: config absent - run ipfs-cluster-service init
   become: true
   become_user: ipfs
