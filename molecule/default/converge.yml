@@ -1,6 +1,13 @@
 
 ---
-- name: Converge
+- name: update apt
+  hosts: all
+  tasks:
+  - name: update apt
+    apt:
+      update_cache: true
+      
+- name: converge
   hosts: all
   roles:
     - role: kravietz.ipfs_config
