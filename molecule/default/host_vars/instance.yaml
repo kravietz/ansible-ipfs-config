@@ -14,4 +14,4 @@ ipfs_cluster_identity:
 ipfs_cluster_bootstrap: []
 ipfs_cluster_config:
   cluster:
-    secret: {{ ipfs_cluster_secret }}
+    secret: "{{ ipfs_cluster_secret }}"
