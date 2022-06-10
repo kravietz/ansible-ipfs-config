@@ -11,6 +11,7 @@
     owner: ipfs
     group: ipfs
     mode: 0750
+    state: directory
 
 - name: config absent - ipfs init
   become: true

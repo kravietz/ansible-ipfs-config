@@ -10,6 +10,7 @@
     owner: ipfs
     group: ipfs
     mode: 0750
+    state: directory
 
 - name: config absent - run ipfs-cluster-service init
   become: true
