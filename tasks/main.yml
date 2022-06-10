@@ -1,8 +1,4 @@
 ---
-- name: debug ipfs cluster config
-  debug: var=ipfs_cluster_config
-  when: ipfs_config_debug is defined
-
 - name: configure ipfs service
   include_tasks: tasks/ipfs.yaml
 

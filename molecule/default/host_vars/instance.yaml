@@ -10,6 +10,7 @@ ipfs_cluster_identity:
   id: 12D3KooWPd39DaEUVdaEHaJhKb3nDBA2SPjgwVA3YsrsSXH7XGa3
   private_key: CAESQLDHjjm8oMlXz5CAI1l40ytMyoJfEBANEfP3AO3RhzI0zRy3BfXYwZaiRtCx9odFzW7dRrdj3oD/kJLIhTiHE6g=
 
+ipfs_cluster_bootstrap: []
 ipfs_cluster_config:
   cluster:
     secret: {{ ipfs_cluster_secret }}
