@@ -1,11 +1,63 @@
 ---
-- name: ipfs-cluster init
+- name: ensure ipfs cluster secret is defined
+  assert:
+    that:
+      - ipfs_cluster_secret is defined
+
+- name: config absent - run ipfs-cluster-service init
   become: true
   become_user: ipfs
   command: "/usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init --peers {{ ipfs_cluster_bootstrap | join(',') }}"
   args:
     chdir: "{{ ipfs_home }}"
     creates: "{{ ipfs_home }}/.ipfs-cluster/service.json"
+  when: ipfs_cluster_config is not defined and ipfs_cluster_identity is not defined
+
+- name: ipfs cluster identity config present - output identity file
+  when: ipfs_cluster_identity is defined
+  block:
+    
+    - name: check if ipfs_cluster_identity contains required fields
+      assert:
+        that:
+          - ipfs_cluster_identity.id is defined
+          - ipfs_cluster_identity.private_key is defined
+
+    - name: ipfs cluster identity file
+      copy:
+        dest: "{{ ipfs_home }}/.ipfs-cluster/identity.json"
+        content: "{{ ipfs_cluster_identity | to_nice_json }}"
+        owner: ipfs
+        group: ipfs
+        mode: 0640
+      notify:
+        - ipfs-cluster restart
+
+- name: ipfs cluster config present - output config file
+  when: hostvars[inventory_hostname]['ipfs_cluster_config'] is defined
+  block:
+
+    - name: combine user config with default config
+      set_fact:
+        ipfs_cluster_config_combined: "{{ ipfs_cluster_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_cluster_config'], recursive=True ) }}"
+  
+    - name: combine user config with cluster secret
+      set_fact:
+        ipfs_cluster_config_combined: '{{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": {{ ipfs_cluster_secret }}}}, recursive=True ) }}'
+
+    - name: debug merged config
+      debug: var=ipfs_cluster_config_combined
+      when: ipfs_config_debug
+
+    - name: ipfs cluster config file
+      copy:
+        dest: "{{ ipfs_home }}/.ipfs-cluster/service.json"
+        content: "{{ ipfs_cluster_config_combined | to_nice_json }}"
+        owner: ipfs
+        group: ipfs
+        mode: 0640
+      notify:
+        - ipfs-cluster restart
 
 - name: ipfs-cluster service file
   template:

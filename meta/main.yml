@@ -5,7 +5,7 @@ galaxy_info:
   role_name: ipfs_config
   namespace: kravietz
 
-  min_ansible_version: '2.1'
+  min_ansible_version: '2.6'
 
   platforms:
   - name: Ubuntu

@@ -2,16 +2,45 @@
 - name: init ipfs user
   user:
     name: ipfs
+    home: "{{ ipfs_home }}"
+    password_lock: true
 
-- name: ipfs config
-  copy:
-    dest: "{{ ipfs_home }}/.ipfs/config"
-    content: "{{ ipfs_config_combined | to_nice_json }}"
-    owner: ipfs
-    group: ipfs
-    mode: 0640
-  notify:
-    - ipfs restart
+- name: config absent - ipfs init
+  become: true
+  become_user: ipfs
+  command: "/usr/local/bin/ipfs init --empty-repo"
+  args:
+    chdir: "{{ ipfs_home }}"
+    creates: "{{ ipfs_home }}/.ipfs/config.json"
+  when: hostvars[inventory_hostname]['ipfs_config'] is not defined
+
+- name: config present - build ipfs config
+  when: hostvars[inventory_hostname]['ipfs_config'] is defined
+  block:
+    - name: combine user config with default config
+      set_fact:
+        ipfs_config_combined: "{{ ipfs_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_config'], recursive=True ) }}"
+  
+    - name: debug merged config
+      debug: var=ipfs_config_combined
+      when: ipfs_config_debug
+
+    - name: check if ipfs keys were defined
+      assert:
+        that:
+          - ipfs_config_combined.Identity.PeerID is defined
+          - ipfs_config_combined.Identity.PrivKey is defined
+        fail_msg: "`ipfs_config.Identity.PeerID` and `ipfs_config.Identity.PeerID` must be defined."
+
+    - name: write ipfs config
+      copy:
+        dest: "{{ ipfs_home }}/.ipfs/config"
+        content: "{{ ipfs_config_combined | to_nice_json }}"
+        owner: ipfs
+        group: ipfs
+        mode: 0640
+      notify:
+        - ipfs restart
 
 - name: ipfs service file
   template:
@@ -34,6 +63,6 @@
 - name: ipfs service
   service:
     name: ipfs
-    state: started
-    enabled: true
+    state: {{ ipfs_service_state }}
+    enabled: {{ ipfs_service_enabled }}
 

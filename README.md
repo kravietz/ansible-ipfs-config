@@ -8,10 +8,13 @@ Requirements
 
 `go-ipfs` must be present in the system.
 
-Role Variables
---------------
+# Role Variables
 
-The primary variable used by this role is `ipfs_config_default` that contains the whole `go-ipfs` config (as found int `.ipfs/config`) in YAML format:
+## go-ipfs
+If no `ipfs_config` is found in Ansible variables for the host, the role will run `ipfs init`.
+
+When `ipfs_config` is defined, it must as a minimum contain `Identity.PeerID` and `Identity.PrivKey`. It's then merged with
+`ipfs_config_default` which contains default configuration produced by `ipfs init`, per [go-ipfs` config reference](https://github.com/ipfs/go-ipfs/blob/master/docs/config.md). Sample:
 
 ```yaml
 
@@ -26,9 +29,7 @@ ipfs_config_default:
     ...
 ```
 
-`go-ipfs` config documentation can be found here https://github.com/ipfs/go-ipfs/blob/master/docs/config.md
-
-In addition the role uses the following variables:
+The role also configured `systemd` service for `ipfs` using the following variables (enforced using [systemd.resource-control](https://www.freedesktop.org/software/systemd/man/systemd.resource-control.html)):
 
 ```yaml
 ipfs_config_debug: true
@@ -36,6 +37,47 @@ ipfs_mem_hi: 800M
 ipfs_mem_max: 1G
 ipfs_home: /home/ipfs
 ```
+
+## ipfs-cluster-service
+
+IPFS clusters always require `ipfs_cluster_secret` variable explicitly defined. If the secret is not defined, the cluster configuration is skipped.
+
+ The secret should be shared among all hosts that belong to a cluster, and can be generated with `openssl rand -hex 32`:
+
+```yaml
+# protect with ansible-vault
+ipfs_cluster_secret: 0d26e71c48e84890c89ef73bc26a45b167df03177df3ca399244e630513fbf53
+```
+On the _first_ cluster node, you should also define the following:
+```yaml
+ipfs_cluster_bootstrap: []`
+```
+All remaining cluster configuration on the _first_ cluster node is optional, and the role will `ipfs-cluster-service init` on the node, creating new configuration with the configured secret.
+
+Any subsequent hosts in the cluster must declare `ipfs_cluster_bootstrap` with address and public key of at least one existing
+cluster member, allowing them to bootstrap configuration and establish connections to other members.
+
+```yaml
+ipfs_cluster_bootstrap:
+  - /ip4/192.168.144.200/tcp/9096/p2p/12D3KooWPd39DaEUVdaEHaJhKb3nDBA2SPjgwVA3YsrsSXH7XGa3
+```
+
+This leads to an interesting chicken-and-egg problem which is resolved by running Ansible twice:
+
+* run the playbook with `ipfs_cluster_bootstrap: []` on all servers,
+* run `sudo -u ipfs ipfs-cluster-ctl id` on that server to retrieve its IPFS cluster address,
+* configure that address in `ipfs_cluster_bootstrap` for all the other hosts.
+
+**Optional:** IPFS cluster identifier and private key are also configurable and can be controlled with the following variables - they end up in `~/.ipfs-cluster/identity.json`:
+
+```yaml
+ipfs_cluster_identity:
+  id: 12D3KooWPd39DaEUVdaEHaJhKb3nDBA2SPjgwVA3YsrsSXH7XGa3
+  private_key: CAESQLDHjjm8oMlXz5CAI1l40ytMyoJfEBANEfP3AO3RhzI0zRy3BfXYwZaiRtCx9odFzW7dRrdj3oD/kJLIhTiHE6g=
+```
+Any other configuration options can be set in `ipfs_cluster_config` and they will be merged with `ipfs_cluster_config_default` to form a full IPFS cluster service configuration file written to `~/.ipfs-cluster/service.json`.
+
+All `systemd` settings set for `ipfs` (see above) will be also applied to the `ipfs-cluster` service. 
 
 Dependencies
 ------------

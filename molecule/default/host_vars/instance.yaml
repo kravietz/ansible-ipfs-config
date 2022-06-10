@@ -3,3 +3,13 @@ ipfs_config:
   Identity:
     PeerID: 12D3KooWC63dS6HaKjMydDRvvPpFdaZHkmRfCixhK6zAgEpFYLUW
     PrivKey: CAESQGAx3NTE6ZJSlmtiI1OAoMGOP2GfuxevjGTRWj9ZEgVuIbu0J4Se4lknO8MKUQQVLjnTHKHDzcMm9Ofp6l36+78=
+
+ipfs_cluster_secret: 0d26e71c48e84890c89ef73bc26a45b167df03177df3ca399244e630513fbf53
+
+ipfs_cluster_identity:
+  id: 12D3KooWPd39DaEUVdaEHaJhKb3nDBA2SPjgwVA3YsrsSXH7XGa3
+  private_key: CAESQLDHjjm8oMlXz5CAI1l40ytMyoJfEBANEfP3AO3RhzI0zRy3BfXYwZaiRtCx9odFzW7dRrdj3oD/kJLIhTiHE6g=
+
+ipfs_cluster_config:
+  cluster:
+    secret: {{ ipfs_cluster_secret }}
