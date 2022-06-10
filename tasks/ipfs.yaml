@@ -63,6 +63,6 @@
 - name: ipfs service
   service:
     name: ipfs
-    state: {{ ipfs_service_state }}
-    enabled: {{ ipfs_service_enabled }}
+    state: "{{ ipfs_service_state }}"
+    enabled: "{{ ipfs_service_enabled }}"
 
