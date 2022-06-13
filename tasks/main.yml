@@ -1,6 +1,6 @@
 ---
 - name: check if apparmor is used
-  state:
+  stat:
     path: /etc/apparmor.d
     register: aa
 - name: set apparmor status
