@@ -6,7 +6,7 @@
 
 - name: set apparmor status
   set_fact:
-    use_apparmor: "{{ aa.stat.isdir }}"
+    use_apparmor: "{{ aa.stat.exists }}"
 
 - name: configure ipfs service
   include_tasks: tasks/ipfs.yaml
