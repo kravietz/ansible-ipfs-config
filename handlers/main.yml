@@ -1,17 +1,21 @@
 ---
 - name: ipfs restart
+  tags: notest
   service:
     name: ipfs.service
     state: restarted
 
 - name: ipfs-cluster restart
+  tags: notest
   service:
     name: ipfs-cluster.service
     state: restarted
 
 - name: load ipfs apparmor
+  tags: notest
   command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs
 
 - name: load ipfs-cluster apparmor
+  tags: notest
   command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs-cluster
 
