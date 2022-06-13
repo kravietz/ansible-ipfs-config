@@ -76,7 +76,7 @@
     mode: 0644
 
 - name: ipfs-cluster apparmor profile
-  when: ipfs_apparmor
+  when: use_apparmor
   template:
     src: templates/cluster/apparmor.j2
     dest: /etc/apparmor.d/ipfs-cluster
@@ -87,7 +87,8 @@
     - load ipfs-cluster apparmor
 
 - name: ipfs-cluster service
+  tags: notest
   service:
     name: ipfs-cluster
-    state: started
-    enabled: true
+    state: "{{ ipfs_cluster_service_state }}"
+    enabled: "{{ ipfs_cluster_service_enabled }}"

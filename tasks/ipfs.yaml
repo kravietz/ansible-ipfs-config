@@ -59,7 +59,7 @@
     mode: 0644
 
 - name: ipfs apparmor profile
-  when: ipfs_apparmor
+  when: use_apparmor
   template:
     src: templates/ipfs/apparmor.j2
     dest: /etc/apparmor.d/ipfs
@@ -70,6 +70,7 @@
     - load ipfs apparmor
 
 - name: ipfs service
+  tags: notest
   service:
     name: ipfs
     state: "{{ ipfs_service_state }}"

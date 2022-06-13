@@ -4,7 +4,8 @@ ipfs_memory_max: 1G
 ipfs_home: /home/ipfs
 ipfs_service_state: started
 ipfs_service_enabled: true
-ipfs_apparmor: true
+ipfs_cluster_service_state: started
+ipfs_cluster_service_enabled: true
 ipfs_config_debug: true
 # https://github.com/ipfs/go-ipfs/blob/master/docs/config.md
 ipfs_config_default:

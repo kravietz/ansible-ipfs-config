@@ -1,4 +1,12 @@
 ---
+- name: check if apparmor is used
+  state:
+    path: /etc/apparmor.d
+    register: aa
+- name: set apparmor status
+  set_fact:
+    use_apparmor: "{{ aa.stat.isdir }}"
+
 - name: configure ipfs service
   include_tasks: tasks/ipfs.yaml
 
