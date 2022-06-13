@@ -51,7 +51,7 @@
   
     - name: combine user config with cluster secret
       set_fact:
-        ipfs_cluster_config_combined: '{{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": {{ ipfs_cluster_secret }}}}, recursive=True ) }}'
+        ipfs_cluster_config_combined: '{{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": ipfs_cluster_secret } }, recursive=True ) }}'
 
     - name: debug merged config
       debug: var=ipfs_cluster_config_combined
