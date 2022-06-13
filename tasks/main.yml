@@ -2,7 +2,8 @@
 - name: check if apparmor is used
   stat:
     path: /etc/apparmor.d
-    register: aa
+  register: aa
+
 - name: set apparmor status
   set_fact:
     use_apparmor: "{{ aa.stat.isdir }}"
