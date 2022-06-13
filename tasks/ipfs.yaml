@@ -70,7 +70,7 @@
     - load ipfs apparmor
 
 - name: ipfs service
-  tags: notest
+  tags: molecule-notest
   service:
     name: ipfs
     state: "{{ ipfs_service_state }}"

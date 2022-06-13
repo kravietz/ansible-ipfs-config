@@ -87,7 +87,7 @@
     - load ipfs-cluster apparmor
 
 - name: ipfs-cluster service
-  tags: notest
+  tags: molecule-notest
   service:
     name: ipfs-cluster
     state: "{{ ipfs_cluster_service_state }}"

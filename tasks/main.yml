@@ -8,6 +8,11 @@
   set_fact:
     use_apparmor: "{{ aa.stat.exists }}"
 
+- name: disable handlers for Docker testing
+  set_fact:
+    molecule_notest: true
+  tags: molecule-notest
+
 - name: configure ipfs service
   include_tasks: tasks/ipfs.yaml
 
