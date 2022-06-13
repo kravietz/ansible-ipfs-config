@@ -18,5 +18,6 @@ jobs:
         with:
           path: "${{ github.repository }}"
 
-      - name: Ansible Molecule
-        uses: MonolithProjects/action-molecule@v1.4.5
+      - uses: MonolithProjects/action-molecule@v1.4.5
+        with:
+          molecule_command: converge
