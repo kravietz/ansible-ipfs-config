@@ -1,21 +1,21 @@
 ---
-- name: check if apparmor is used
-  stat:
+- name: Check if apparmor is used
+  ansible.builtin.stat:
     path: /etc/apparmor.d
   register: aa
 
-- name: set apparmor status
-  set_fact:
+- name: Set apparmor status
+  ansible.builtin.set_fact:
     use_apparmor: "{{ aa.stat.exists }}"
 
-- name: disable handlers for Docker testing
-  set_fact:
+- name: Disable handlers for Docker testing
+  ansible.builtin.set_fact:
     molecule_notest: true
   tags: molecule-notest
 
-- name: configure ipfs service
-  include_tasks: tasks/ipfs.yaml
+- name: Configure ipfs service
+  ansible.builtin.include_tasks: tasks/ipfs.yaml
 
-- name: configure ipfs cluster
-  include_tasks: tasks/clust.yaml
+- name: Configure ipfs cluster
+  ansible.builtin.include_tasks: tasks/clust.yaml
   when: ipfs_cluster_secret is defined and ipfs_cluster_bootstrap is defined

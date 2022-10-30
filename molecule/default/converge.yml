@@ -1,14 +1,14 @@
 
 ---
-- name: update apt
+- name: Update apt
   hosts: all
   tasks:
 
-  - name: update apt
+  - name: Update apt
     apt:
       update_cache: true
 
-- name: converge
+- name: Converge
   hosts: all
   roles:
     - role: kravietz.ipfs_config

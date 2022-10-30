@@ -1,38 +1,37 @@
 ---
-- name: ensure ipfs cluster secret is defined
-  assert:
+- name: Ensure ipfs cluster secret is defined
+  ansible.builtin.assert:
     that:
       - ipfs_cluster_secret is defined
 
-- name: ensure ipfs cluster config directory
-  file:
+- name: Ensure ipfs cluster config directory
+  ansible.builtin.file:
     dest: "{{ ipfs_home }}/.ipfs-cluster"
     owner: ipfs
     group: ipfs
     mode: 0750
     state: directory
 
-- name: config absent - run ipfs-cluster-service init
+- name: Config absent - run ipfs-cluster-service init
   become: true
   become_user: ipfs
-  command: "/usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init --peers {{ ipfs_cluster_bootstrap | join(',') }}"
+  ansible.builtin.command: "/usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init --peers {{ ipfs_cluster_bootstrap | join(',') }}"
   args:
     chdir: "{{ ipfs_home }}"
     creates: "{{ ipfs_home }}/.ipfs-cluster/service.json"
   when: ipfs_cluster_config is not defined and ipfs_cluster_identity is not defined
 
-- name: ipfs cluster identity config present - output identity file
+- name: Ipfs cluster identity config present - output identity file
   when: ipfs_cluster_identity is defined
-  block:
-    
-    - name: check if ipfs_cluster_identity contains required fields
-      assert:
+  ansible.builtin.block:
+    - name: Check if ipfs_cluster_identity contains required fields
+      ansible.builtin.assert:
         that:
           - ipfs_cluster_identity.id is defined
           - ipfs_cluster_identity.private_key is defined
 
-    - name: ipfs cluster identity file
-      copy:
+    - name: Upfs cluster identity file
+      ansible.builtin.copy:
         dest: "{{ ipfs_home }}/.ipfs-cluster/identity.json"
         content: "{{ ipfs_cluster_identity | to_nice_json }}"
         owner: ipfs
@@ -41,24 +40,23 @@
       notify:
         - ipfs-cluster restart
 
-- name: ipfs cluster config present - output config file
+- name: Ipfs cluster config present - output config file
   when: hostvars[inventory_hostname]['ipfs_cluster_config'] is defined
-  block:
-
-    - name: combine user config with default config
-      set_fact:
+  ansible.builtin.block:
+    - name: Combine user config with default config
+      ansible.builtin.set_fact:
         ipfs_cluster_config_combined: "{{ ipfs_cluster_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_cluster_config'], recursive=True ) }}"
-  
-    - name: combine user config with cluster secret
+
+    - name: Combine user config with cluster secret
       set_fact:
         ipfs_cluster_config_combined: '{{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": ipfs_cluster_secret } }, recursive=True ) }}'
 
-    - name: debug merged config
-      debug: var=ipfs_cluster_config_combined
+    - name: Debug merged config
+      ansible.builtin.debug: var=ipfs_cluster_config_combined
       when: ipfs_config_debug
 
-    - name: ipfs cluster config file
-      copy:
+    - name: Ipfs cluster config file
+      ansible.builtin.copy:
         dest: "{{ ipfs_home }}/.ipfs-cluster/service.json"
         content: "{{ ipfs_cluster_config_combined | to_nice_json }}"
         owner: ipfs
@@ -67,17 +65,17 @@
       notify:
         - ipfs-cluster restart
 
-- name: ipfs-cluster service file
-  template:
+- name: Ipfs-cluster service file
+  ansible.builtin.template:
     src: templates/cluster/service.j2
     dest: /etc/systemd/system/ipfs-cluster.service
     owner: root
     group: root
     mode: 0644
 
-- name: ipfs-cluster apparmor profile
+- name: Ipfs-cluster apparmor profile
   when: use_apparmor
-  template:
+  ansible.builtin.template:
     src: templates/cluster/apparmor.j2
     dest: /etc/apparmor.d/ipfs-cluster
     owner: root
@@ -86,9 +84,9 @@
   notify:
     - load ipfs-cluster apparmor
 
-- name: ipfs-cluster service
+- name: Ipfs-cluster service
   tags: molecule-notest
-  service:
+  ansible.builtin.service:
     name: ipfs-cluster
     state: "{{ ipfs_cluster_service_state }}"
     enabled: "{{ ipfs_cluster_service_enabled }}"
