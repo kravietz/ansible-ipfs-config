@@ -15,7 +15,9 @@
 - name: Config absent - run ipfs-cluster-service init
   become: true
   become_user: ipfs
-  ansible.builtin.command: "/usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init --peers {{ ipfs_cluster_bootstrap | join(',') }}"
+  ansible.builtin.command: >
+    /usr/bin/env CLUSTER_SECRET={{ ipfs_cluster_secret }} /usr/local/bin/ipfs-cluster-service init
+    --peers {{ ipfs_cluster_bootstrap | join(',') }}
   args:
     chdir: "{{ ipfs_home }}"
     creates: "{{ ipfs_home }}/.ipfs-cluster/service.json"
@@ -23,7 +25,7 @@
 
 - name: Ipfs cluster identity config present - output identity file
   when: ipfs_cluster_identity is defined
-  ansible.builtin.block:
+  block:
     - name: Check if ipfs_cluster_identity contains required fields
       ansible.builtin.assert:
         that:
@@ -38,18 +40,21 @@
         group: ipfs
         mode: 0640
       notify:
-        - ipfs-cluster restart
+        - Ipfs-cluster restart
 
 - name: Ipfs cluster config present - output config file
   when: hostvars[inventory_hostname]['ipfs_cluster_config'] is defined
-  ansible.builtin.block:
+  block:
     - name: Combine user config with default config
       ansible.builtin.set_fact:
-        ipfs_cluster_config_combined: "{{ ipfs_cluster_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_cluster_config'], recursive=True ) }}"
+        ipfs_cluster_config_combined: >
+          {{ ipfs_cluster_config_default | default({})
+          | combine (hostvars[inventory_hostname]['ipfs_cluster_config'], recursive=True) }}
 
     - name: Combine user config with cluster secret
-      set_fact:
-        ipfs_cluster_config_combined: '{{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": ipfs_cluster_secret } }, recursive=True ) }}'
+      ansible.builtin.set_fact:
+        ipfs_cluster_config_combined: >
+          {{ ipfs_cluster_config_combined  | combine ( {"cluster": {"secret": ipfs_cluster_secret } }, recursive=True ) }}
 
     - name: Debug merged config
       ansible.builtin.debug: var=ipfs_cluster_config_combined
@@ -63,7 +68,7 @@
         group: ipfs
         mode: 0640
       notify:
-        - ipfs-cluster restart
+        - Ipfs-cluster restart
 
 - name: Ipfs-cluster service file
   ansible.builtin.template:
@@ -82,7 +87,7 @@
     group: root
     mode: 0644
   notify:
-    - load ipfs-cluster apparmor
+    - Load ipfs-cluster apparmor
 
 - name: Ipfs-cluster service
   tags: molecule-notest

@@ -1,21 +1,20 @@
 ---
-- name: ipfs restart
+- name: Ipfs restart
   when: molecule_notest | default(false)
-  service:
+  ansible.builtin.service:
     name: ipfs.service
     state: restarted
 
-- name: ipfs-cluster restart
+- name: Ipfs-cluster restart
   when: molecule_notest | default(false)
-  service:
+  ansible.builtin.service:
     name: ipfs-cluster.service
     state: restarted
 
-- name: load ipfs apparmor
+- name: Load ipfs apparmor
   when: molecule_notest | default(false)
-  command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs
+  ansible.builtin.command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs
 
-- name: load ipfs-cluster apparmor
+- name: Load ipfs-cluster apparmor
   when: molecule_notest | default(false)
-  command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs-cluster
-
+  ansible.builtin.command: /sbin/apparmor_parser -r -W /etc/apparmor.d/ipfs-cluster

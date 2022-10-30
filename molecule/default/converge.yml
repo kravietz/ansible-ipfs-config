@@ -5,7 +5,7 @@
   tasks:
 
   - name: Update apt
-    apt:
+    ansible.builtin.apt:
       update_cache: true
 
 - name: Converge

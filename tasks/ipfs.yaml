@@ -24,10 +24,10 @@
 
 - name: Config present - build ipfs config
   when: hostvars[inventory_hostname]['ipfs_config'] is defined
-  ansible.builtin.block:
+  block:
     - name: Combine user config with default config
       ansible.builtin.set_fact:
-        ipfs_config_combined: "{{ ipfs_config_default | default({}) | combine ( hostvars[inventory_hostname]['ipfs_config'], recursive=True ) }}"
+        ipfs_config_combined: "{{ ipfs_config_default | default({}) | combine (hostvars[inventory_hostname]['ipfs_config'], recursive=True) }}"
 
     - name: Debug merged config
       ansible.builtin.debug: var=ipfs_config_combined
@@ -48,7 +48,7 @@
         group: ipfs
         mode: 0640
       notify:
-        - ipfs restart
+        - Ipfs restart
 
 - name: Ipfs service file
   ansible.builtin.template:
@@ -67,7 +67,7 @@
     group: root
     mode: 0644
   notify:
-    - load ipfs apparmor
+    - Load ipfs apparmor
 
 - name: Ipfs service
   tags: molecule-notest
