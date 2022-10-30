@@ -14,6 +14,10 @@ galaxy_info:
 
   galaxy_tags:
     - ipfs
+    - networking
+    - p2p
+    - distributed
 
 dependencies:
   - role: andrewrothstein.ipfs
+    version: v2.0.0
