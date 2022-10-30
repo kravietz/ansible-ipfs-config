@@ -18,6 +18,7 @@ jobs:
         with:
           path: "${{ github.repository }}"
 
-      - uses: MonolithProjects/action-molecule@v1.4.5
+      - name: Ansible Molecule
+        uses: gofrolist/molecule-action@v2.3.2
         with:
-          molecule_command: converge
+          molecule_working_dir: "${{ github.repository }}"
