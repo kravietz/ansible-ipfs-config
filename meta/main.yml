@@ -21,4 +21,4 @@ galaxy_info:
 
 dependencies:
   - role: andrewrothstein.ipfs
-    version: v2.0.0
+    version: v2.0.1
